@@ -14,7 +14,6 @@ class Board
 
     if @ships != ships.sort
       # need to figure out what squares correspond to the sunk ship
-      $LOGGER.info("sunk ship! #{@ships.inspect}, #{ships.inspect}")
 
       @sunk_ship = true
       @ships = ships.sort
@@ -69,28 +68,24 @@ class Board
 
     if max_squares.length > 0
       max_square = max_squares.sample
-      return [max_square.x, max_square.y]
+      return max_square
     end
 
     return random_guess
   end
 
   def random_guess
-    $LOGGER.info "falling back to random guess"
-
     guess = nil
 
     loop do
-      guess = [rand(10), rand(10)]
-      break if @grid[guess[0], guess[1]].state == :unknown
+      x = rand(10)
+      y = rand(10)
+
+      guess = @grid[x,y]
+      break if guess.state == :unknown
     end
 
     guess
-  end
-
-  def near(square)
-    [rand(10), rand(10)]
-    # Basically just choose a square near the hit square and if it's also a hit continue in that direction or try the opposite side. If both are misses try the other direction
   end
 
   private

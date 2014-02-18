@@ -1,5 +1,6 @@
-require 'logger'
-$LOGGER = Logger.new('red_bantic.log')
+#require 'logger'
+#$LOGGER = Logger.new('red_bantic.log')
+#$LOGGER.level = Logger::FATAL
 
 $:.unshift File.dirname(__FILE__)
 require 'lib/board'
@@ -27,24 +28,9 @@ class RedBanticPlayer
 
     @board.update_state(state, ships_remaining)
 
-    if @board.hit?
-      $LOGGER.info("HIT! #{@board.hit}")
-    end
-    if @board.miss?
-      $LOGGER.info("MISS! #{@board.miss}")
-    end
+    move = @board.highest_ranking_square
 
-    if @board.hit? && !@board.sunk_ship?
-      @mode =  :destroy
-    else
-      @mode  = :seek
-    end
-
-    if @mode == :seek
-      return @board.highest_ranking_square
-    else
-      return @board.near(@board.hit)
-    end
+    return [move.x, move.y]
   end
 
   private
