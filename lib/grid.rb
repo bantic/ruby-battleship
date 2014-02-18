@@ -7,9 +7,9 @@ class Grid
   def initialize
     @squares = []
 
-    0.upto(WIDTH) do |x|
+    (0...HEIGHT).each do |y|
       _row = []
-      0.upto(HEIGHT) do |y|
+      (0...WIDTH).each do |x|
         _row << Square.new(x,y)
       end
 
@@ -17,7 +17,20 @@ class Grid
     end
   end
 
+  def each_square(&block)
+    (0...HEIGHT).each do |y|
+      (0...WIDTH).each do |x|
+        yield self[x,y]
+      end
+    end
+  end
+
   def [](x,y)
-    @squares[x][y]
+    return nil if x < 0
+    return nil if y < 0
+    return nil if x >= WIDTH
+    return nil if y >= HEIGHT
+
+    @squares[y][x]
   end
 end
