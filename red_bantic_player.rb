@@ -1,3 +1,11 @@
+require 'logger'
+$LOGGER = Logger.new('red_bantic.log')
+
+$:.unshift File.dirname(__FILE__)
+require 'lib/board'
+require 'lib/grid'
+require 'lib/square'
+
 class RedBanticPlayer
   def name
     "@bantic's and @redyaffle's ruby battlebot"
@@ -7,7 +15,7 @@ class RedBanticPlayer
     [
       sample_board_1,
       sample_board_2,
-      sample_board_e,
+      sample_board_3,
       sample_board_4,
       sample_board_5,
       sample_board_6
@@ -15,7 +23,28 @@ class RedBanticPlayer
   end
 
   def take_turn(state, ships_remaining)
-    [rand(10), rand(10)]
+    @board ||= Board.new
+
+    @board.update_state(state, ships_remaining)
+
+    if @board.hit?
+      $LOGGER.info("HIT! #{@board.hit}")
+    end
+    if @board.miss?
+      $LOGGER.info("MISS! #{@board.miss}")
+    end
+
+    if @board.hit? && !@board.sunk_ship?
+      @mode =  :destroy
+    else
+      @mode  = :seek
+    end
+
+    if @mode == :seek
+      return @board.highest_ranking_square
+    else
+      return @board.near(@board.hit)
+    end
   end
 
   private
